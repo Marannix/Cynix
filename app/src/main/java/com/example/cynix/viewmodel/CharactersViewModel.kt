@@ -1,7 +1,7 @@
 package com.example.cynix.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.example.cynix.data.characters.CharactersResults
+import com.example.cynix.data.entity.CharactersEntity
 import com.example.cynix.usecase.CharacterUseCase
 import com.example.cynix.usecase.CharacterUseCase.*
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,7 +13,7 @@ class CharactersViewModel @Inject constructor(
 
     val viewState = MutableLiveData<CharacterViewState>()
 
-    //TODO: Handle error state when fails (no network or bad request..)r
+    //TODO: Handle error state when fails (no network or bad request..)
     fun getCharacters() {
         characterUseCase.getCharacterDataState()
             .observeOn(AndroidSchedulers.mainThread())
@@ -41,7 +41,7 @@ class CharactersViewModel @Inject constructor(
 
     sealed class CharacterViewState {
         object Loading : CharacterViewState()
-        data class ShowCharacters(val characters: List<CharactersResults>) : CharacterViewState()
+        data class ShowCharacters(val characters: List<CharactersEntity>) : CharacterViewState()
         data class ShowError(val errorMessage: String?) : CharacterViewState()
     }
 }

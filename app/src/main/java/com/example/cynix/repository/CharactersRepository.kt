@@ -1,12 +1,13 @@
 package com.example.cynix.repository
 
+import android.util.Log
 import com.example.cynix.api.CharactersApi
-import com.example.cynix.data.characters.CharactersDao
+import com.example.cynix.data.dao.CharactersDao
 import com.example.cynix.data.characters.CharactersResults
+import com.example.cynix.data.entity.CharactersEntity
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-
 
 
 class CharactersRepository @Inject constructor(
@@ -14,19 +15,21 @@ class CharactersRepository @Inject constructor(
     private val charactersApi: CharactersApi
 ) {
 
-    fun getCharacters(): Observable<List<CharactersResults>> {
+    fun getCharacters(): Observable<List<CharactersEntity>> {
         return getCharactersFromDb()
     }
 
-    private fun getCharactersFromApi(): Observable<CharactersResults> {
+    private fun getCharactersFromApi(): Observable<CharactersEntity> {
         return fetchInitialCharacters()
-            .concatMap { listOfCharacters -> Observable.fromIterable(listOfCharacters) }
+            .concatMap { listOfCharacters ->
+                Observable.fromIterable(listOfCharacters).map { mappingFromApiToDb(it) }
+            }
     }
 
-    private fun fetchInitialCharacters() : Observable<List<CharactersResults>> {
+    private fun fetchInitialCharacters(): Observable<List<CharactersResults>> {
         return charactersApi.getCharacters()
             .subscribeOn(Schedulers.io())
-            .concatMap {  response ->
+            .concatMap { response ->
                 if (response.characterPageInfo.next.isEmpty()) {
                     Observable.just(response.charactersResults)
                 } else {
@@ -56,18 +59,37 @@ class CharactersRepository @Inject constructor(
     }
 
     private fun storeCharactersInDb(characters: List<CharactersResults>) {
-        charactersDao.insertCharacters(characters)
+        characters.forEach { charactersResults ->
+            val mapped = mappingFromApiToDb(charactersResults)
+            if (mapped is CharactersEntity && mapped != null) {
+                charactersDao.insert(mapped)
+            }
+        }
     }
 
-    private fun getCharactersFromDb(): Observable<List<CharactersResults>> {
+    private fun getCharactersFromDb(): Observable<List<CharactersEntity>> {
         return charactersDao.getCharacters()
             .toObservable()
             .flatMap { list ->
                 return@flatMap if (list.isEmpty()) {
                     getCharactersFromApi().toList().toObservable()
                 } else {
+                    Log.d("charactersDao", list.toString())
                     Observable.just(list)
                 }
             }
+    }
+
+    private fun mappingFromApiToDb(charactersResults: CharactersResults): CharactersEntity {
+        return CharactersEntity(
+            charactersResults.id,
+            charactersResults.name,
+            charactersResults.status,
+            charactersResults.species,
+            charactersResults.gender,
+            charactersResults.image,
+            charactersResults.location,
+            charactersResults.episode
+        )
     }
 }

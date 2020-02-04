@@ -2,7 +2,7 @@ package com.example.cynix.dagger.modules
 
 import android.app.Application
 import androidx.room.Room
-import com.example.cynix.data.characters.CharactersDao
+import com.example.cynix.data.dao.CharactersDao
 import com.example.cynix.database.ApplicationDatabase
 import dagger.Module
 import dagger.Provides

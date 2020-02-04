@@ -1,6 +1,6 @@
 package com.example.cynix.usecase
 
-import com.example.cynix.data.characters.CharactersResults
+import com.example.cynix.data.entity.CharactersEntity
 import com.example.cynix.repository.CharactersRepository
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class CharacterUseCase @Inject constructor(
     }
 
     sealed class CharacterDataState {
-        data class Success(val characters: List<CharactersResults>) : CharacterDataState()
+        data class Success(val characters: List<CharactersEntity>) : CharacterDataState()
         data class Error(val errorMessage: String?) : CharacterDataState()
     }
 }
