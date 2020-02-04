@@ -1,4 +1,4 @@
-package com.example.rickandmorty.dagger.modules
+package com.example.cynix.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

@@ -6,7 +6,7 @@ import com.example.cynix.dagger.modules.ApiModule
 import com.example.cynix.dagger.modules.ApplicationModule
 import com.example.cynix.dagger.modules.ActivityBuilder
 import com.example.cynix.dagger.modules.RoomModule
-import com.example.rickandmorty.dagger.modules.ViewModelModule
+import com.example.cynix.dagger.modules.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector

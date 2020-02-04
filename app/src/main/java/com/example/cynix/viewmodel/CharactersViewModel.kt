@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.cynix.data.characters.CharactersResults
 import com.example.cynix.usecase.CharacterUseCase
 import com.example.cynix.usecase.CharacterUseCase.*
-import com.example.rickandmorty.viewmodel.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
