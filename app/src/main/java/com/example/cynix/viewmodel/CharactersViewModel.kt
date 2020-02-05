@@ -1,47 +1,45 @@
 package com.example.cynix.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+import com.example.cynix.common.AsyncResult
 import com.example.cynix.data.entity.CharactersEntity
+import com.example.cynix.state.CharactersState
 import com.example.cynix.usecase.CharacterUseCase
-import com.example.cynix.usecase.CharacterUseCase.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CharactersViewModel @Inject constructor(
     private val characterUseCase: CharacterUseCase
-) : BaseViewModel() {
+) : BaseViewModel<CharactersState, CharactersViewModel.CharacterEvent>(CharactersState()) {
 
-    val viewState = MutableLiveData<CharacterViewState>()
+    init {
+        getCharacters()
+    }
 
-    //TODO: Handle error state when fails (no network or bad request..)
-    fun getCharacters() {
+    private fun getCharacters() {
         characterUseCase.getCharacterDataState()
             .observeOn(AndroidSchedulers.mainThread())
             .map { characterDataState ->
                 return@map when (characterDataState) {
-                    is CharacterDataState.Success -> {
-                        CharacterViewState.ShowCharacters(characterDataState.characters)
-                    }
-                    is CharacterDataState.Error -> {
-                        //Probably not needed, could just show error
-                        if (viewState.value is CharacterViewState.ShowCharacters) {
-                            viewState.value
-                        } else {
-                            CharacterViewState.ShowError(characterDataState.errorMessage)
-                        }
+                    is CharacterUseCase.CharacterDataState.Success -> {
+                        AsyncResult.Success(characterDataState.characters)
 
+                    }
+                    is CharacterUseCase.CharacterDataState.Error -> {
+                        AsyncResult.Error(characterDataState.errorMessage)
                     }
                 }
             }
-            .doOnSubscribe { viewState.value = CharacterViewState.Loading }
-            .subscribe { viewState ->
-                this.viewState.value = viewState
-            }.addDisposable()
+            .startWith(AsyncResult.Loading)
+            .subscribe { state ->
+                CharactersState(state)
+                applyState(Reducer { it.copy(characters = state) })
+            }
+            .addDisposable()
     }
 
-    sealed class CharacterViewState {
-        object Loading : CharacterViewState()
-        data class ShowCharacters(val characters: List<CharactersEntity>) : CharacterViewState()
-        data class ShowError(val errorMessage: String?) : CharacterViewState()
+
+    sealed class CharacterEvent {
+        object GenericErrorEvent : CharacterEvent()
     }
+
 }

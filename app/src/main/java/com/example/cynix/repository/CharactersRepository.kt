@@ -19,6 +19,19 @@ class CharactersRepository @Inject constructor(
         return getCharactersFromDb()
     }
 
+    private fun getCharactersFromDb(): Observable<List<CharactersEntity>> {
+        return charactersDao.getCharacters()
+            .toObservable()
+            .flatMap { list ->
+                return@flatMap if (list.isEmpty()) {
+                    getCharactersFromApi().toList().toObservable()
+                } else {
+                    Log.d("charactersDao", list.toString())
+                    Observable.just(list)
+                }
+            }
+    }
+
     private fun getCharactersFromApi(): Observable<CharactersEntity> {
         return fetchInitialCharacters()
             .concatMap { listOfCharacters ->
@@ -61,23 +74,8 @@ class CharactersRepository @Inject constructor(
     private fun storeCharactersInDb(characters: List<CharactersResults>) {
         characters.forEach { charactersResults ->
             val mapped = mappingFromApiToDb(charactersResults)
-            if (mapped is CharactersEntity && mapped != null) {
-                charactersDao.insert(mapped)
-            }
+            charactersDao.insert(mapped)
         }
-    }
-
-    private fun getCharactersFromDb(): Observable<List<CharactersEntity>> {
-        return charactersDao.getCharacters()
-            .toObservable()
-            .flatMap { list ->
-                return@flatMap if (list.isEmpty()) {
-                    getCharactersFromApi().toList().toObservable()
-                } else {
-                    Log.d("charactersDao", list.toString())
-                    Observable.just(list)
-                }
-            }
     }
 
     private fun mappingFromApiToDb(charactersResults: CharactersResults): CharactersEntity {

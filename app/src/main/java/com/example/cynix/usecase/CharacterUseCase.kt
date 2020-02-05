@@ -17,6 +17,7 @@ class CharacterUseCase @Inject constructor(
             .onErrorReturn { error -> CharacterDataState.Error(error.message) }
     }
 
+
     sealed class CharacterDataState {
         data class Success(val characters: List<CharactersEntity>) : CharacterDataState()
         data class Error(val errorMessage: String?) : CharacterDataState()

@@ -1,4 +1,4 @@
-package com.example.cynix
+package com.example.cynix.activity
 
 import android.os.Bundle
 import android.os.PersistableBundle
