@@ -12,21 +12,21 @@ const val BASE_URL = "https://rickandmortyapi.com/api/"
 
 @Module
 class ApiModule {
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideCharactersApi(retrofit: Retrofit): CharactersApi {
-        return retrofit.create(CharactersApi::class.java)
-    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideCharactersApi(retrofit: Retrofit): CharactersApi {
+//        return retrofit.create(CharactersApi::class.java)
+//    }
 
 }

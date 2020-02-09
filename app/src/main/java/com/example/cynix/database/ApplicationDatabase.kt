@@ -12,6 +12,7 @@ import com.example.cynix.data.entity.CharactersEntity
     entities = [CharactersEntity::class],
     version = 3
 )
+//TODO: Need to inject the new characterDao
 @TypeConverters(Converters::class)
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun charactersDao(): CharactersDao

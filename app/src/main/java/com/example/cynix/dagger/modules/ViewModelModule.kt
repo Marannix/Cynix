@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.cynix.dagger.ViewModelFactory
 import com.example.cynix.dagger.ViewModelKey
-import com.example.cynix.viewmodel.CharactersViewModel
+
+import com.example.cynix.viewmodel.CharactersViewModel2
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -14,10 +15,14 @@ abstract class ViewModelModule {
 
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+//
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(CharactersViewModel::class)
+//    internal abstract fun bindingCharactersViewModel(viewModel: CharactersViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(CharactersViewModel::class)
-    internal abstract fun bindingCharactersViewModel(viewModel: CharactersViewModel): ViewModel
-
+    @ViewModelKey(CharactersViewModel2::class)
+    internal abstract fun bindingCharactersViewModel2(viewModel: CharactersViewModel2): ViewModel
 }

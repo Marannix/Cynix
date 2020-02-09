@@ -11,21 +11,21 @@ import javax.inject.Singleton
 @Module
 class RoomModule {
 
-    @Singleton
-    @Provides
-    fun provideRoomDatabase(application: Application): ApplicationDatabase {
-        return Room.databaseBuilder(
-            application.applicationContext,
-            ApplicationDatabase::class.java, "rickandmorty.db"
-        )
-            .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideCharactersDao(applicationDatabase: ApplicationDatabase): CharactersDao {
-        return applicationDatabase.charactersDao()
-    }
+//    @Singleton
+//    @Provides
+//    fun provideRoomDatabase(application: Application): ApplicationDatabase {
+//        return Room.databaseBuilder(
+//            application.applicationContext,
+//            ApplicationDatabase::class.java, "rickandmorty.db"
+//        )
+//            .allowMainThreadQueries()
+//            .fallbackToDestructiveMigration()
+//            .build()
+//    }
+//
+//    @Singleton
+//    @Provides
+//    fun provideCharactersDao(applicationDatabase: ApplicationDatabase): CharactersDao {
+//        return applicationDatabase.charactersDao()
+//    }
 }

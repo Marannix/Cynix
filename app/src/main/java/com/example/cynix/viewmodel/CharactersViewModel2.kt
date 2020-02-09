@@ -1,20 +1,23 @@
 package com.example.cynix.viewmodel
 
+import android.util.Log
+import com.example.cynix.character.usecase.ObserveCharacterUseCase
 import com.example.cynix.common.AsyncResult
 import com.example.cynix.data.entity.CharactersEntity
 import com.example.cynix.state.CharactersState
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-//class CharactersViewModel @Inject constructor(
-//    private val characterUseCase: CharacterUseCase
-//) : BaseViewModel<CharactersState, CharactersViewModel.CharacterEvent>(CharactersState()) {
+class CharactersViewModel2 @Inject constructor(
+    private val characterUseCase: ObserveCharacterUseCase
+) : BaseViewModel<CharactersState, CharactersViewModel2.CharacterEvent>(CharactersState()) {
 
-//    init {
-//        getCharacters()
-//    }
-//
-//    private fun getCharacters() {
+    init {
+        getCharacters()
+    }
+
+    private fun getCharacters() {
 //        characterUseCase.getCharacterDataState()
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .map { characterDataState ->
@@ -34,11 +37,20 @@ import javax.inject.Inject
 //                applyState(Reducer { it.copy(characters = state) })
 //            }
 //            .addDisposable()
-//    }
-//
-//
-//    sealed class CharacterEvent {
-//        object GenericErrorEvent : CharacterEvent()
-//    }
 
-//}
+        characterUseCase.invoke()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.d("stuff", it[2].toString())
+            }, {
+                Log.d("error", it.message)
+            })
+            .addDisposable()
+    }
+
+
+    sealed class CharacterEvent {
+        object GenericErrorEvent : CharacterEvent()
+    }
+
+}

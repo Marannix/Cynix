@@ -1,10 +1,9 @@
-package com.example.cynix.data.persistence
+package com.example.cynix.common.persistence
 
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Update
 
-// TODO: Delete, handled in data module
 interface EntityDao<in E> {
     @Insert
     fun insert(entity: E): Long

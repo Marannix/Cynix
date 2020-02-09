@@ -5,7 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.cynix.R
-import com.example.cynix.viewmodel.CharactersViewModel
+
+import com.example.cynix.viewmodel.CharactersViewModel2
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewmodel: CharactersViewModel
+    private lateinit var viewmodel: CharactersViewModel2
     private val disposables = CompositeDisposable()
 
     private fun Disposable.addDisposable() = disposables.add(this)
@@ -25,23 +26,23 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
 
         viewmodel =
-            ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
+            ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel2::class.java)
 
-        viewmodel.events()
-            .subscribe {
-                when (it) {
-                    is CharactersViewModel.CharacterEvent.GenericErrorEvent -> {
-                        Log.d("error -> ", "event error")
-                    }
-                }
-            }.addDisposable()
-
-        viewmodel.states()
-            .distinctUntilChanged()
-            .subscribe { state ->
-                Log.d("loading", state.isLoading.toString())
-                Log.d("charactersState", state.characters.toString())
-            }.addDisposable()
+//        viewmodel.events()
+//            .subscribe {
+//                when (it) {
+//                    is CharactersViewModel.CharacterEvent.GenericErrorEvent -> {
+//                        Log.d("error -> ", "event error")
+//                    }
+//                }
+//            }.addDisposable()
+//
+//        viewmodel.states()
+//            .distinctUntilChanged()
+//            .subscribe { state ->
+//                Log.d("loading", state.isLoading.toString())
+//                Log.d("charactersState", state.characters.toString())
+//            }.addDisposable()
 
     }
 

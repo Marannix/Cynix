@@ -1,12 +1,11 @@
-package com.example.cynix.data.entity
+package com.example.cynix.characters.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.cynix.data.characters.CharacterLocation
+import com.example.cynix.remote.CharacterApiContract
 
-//TODO: Handle in data module
 @Entity(tableName = "characters")
 data class CharactersEntity(
     @PrimaryKey(autoGenerate = false)
@@ -17,6 +16,6 @@ data class CharactersEntity(
     @ColumnInfo(name = "gender") val gender: String,
     @ColumnInfo(name = "image") val image: String,
     @Embedded(prefix = "location_")
-    val location: CharacterLocation,
+    val location: CharacterApiContract.CharacterLocation,
     @ColumnInfo(name = "episode") val episode: List<String>
 )
