@@ -3,7 +3,7 @@ package com.example.cynix.dagger.module
 import android.app.Application
 import androidx.room.Room
 import com.example.cynix.characters.dao.CharacterDao
-import com.example.cynix.database.ApplicationDatabase2
+import com.example.cynix.database.ApplicationDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -13,10 +13,10 @@ class RoomModule {
 
     @Singleton
     @Provides
-    fun provideRoomDatabase(application: Application): ApplicationDatabase2 {
+    fun provideRoomDatabase(application: Application): ApplicationDatabase {
         return Room.databaseBuilder(
             application.applicationContext,
-            ApplicationDatabase2::class.java, "rickandmorty.db"
+            ApplicationDatabase::class.java, "rickandmorty.db"
         )
             .allowMainThreadQueries()
             .fallbackToDestructiveMigration()
@@ -25,7 +25,7 @@ class RoomModule {
 
     @Singleton
     @Provides
-    fun provideCharactersDao(applicationDatabase: ApplicationDatabase2): CharacterDao {
+    fun provideCharactersDao(applicationDatabase: ApplicationDatabase): CharacterDao {
         return applicationDatabase.charactersDao()
     }
 }

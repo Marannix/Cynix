@@ -11,7 +11,7 @@ import javax.inject.Singleton
 const val BASE_URL = "https://rickandmortyapi.com/api/"
 
 @Module
-class ApiModule2 {
+class ApiModule {
 
     @Provides
     @Singleton
