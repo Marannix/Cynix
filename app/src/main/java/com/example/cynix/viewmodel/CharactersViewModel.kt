@@ -1,16 +1,17 @@
 package com.example.cynix.viewmodel
 
 import android.util.Log
+import com.example.cynix.character.Character
 import com.example.cynix.character.usecase.ObserveCharacterUseCase
-import com.example.cynix.characters.entity.CharactersEntity
 import com.example.cynix.common.AsyncResult
+import io.reactivex.Observable
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CharactersViewModel @Inject constructor(
     private val characterUseCase: ObserveCharacterUseCase
-) : BaseViewModel<CharactersState , CharactersViewModel.CharacterEvent>(CharactersState()) {
+) : BaseViewModel<CharactersState, CharactersViewModel.CharacterEvent>(CharactersState()) {
 
 
     init {
@@ -40,8 +41,11 @@ class CharactersViewModel @Inject constructor(
 
         characterUseCase.invoke()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("stuff", it[2].toString())
+            .mapToAsyncResult()
+            .subscribe({ result ->
+                CharactersState(result)
+                applyState(Reducer { it.copy(characters = result) })
+                Log.d("stuff", result.toString())
             }, {
                 Log.d("error", it.message)
             })
@@ -55,8 +59,15 @@ class CharactersViewModel @Inject constructor(
 
 }
 
+
+fun <T> Observable<T>.mapToAsyncResult(): Observable<AsyncResult<T>> {
+    return this.map<AsyncResult<T>> { data -> AsyncResult.Success(data) }
+        .onErrorReturn { e -> AsyncResult.Error(e.message) }
+        .startWith(AsyncResult.Loading)
+}
+
 data class CharactersState(
-    val characters: AsyncResult<List<CharactersEntity>>? = null
+    val characters: AsyncResult<List<Character>>? = null
 ) {
     val isLoading: Boolean?
         get() = characters is AsyncResult.Loading
