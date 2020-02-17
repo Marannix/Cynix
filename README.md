@@ -20,6 +20,6 @@ Presentation Acrhitecture:
  
  ### What does this project do?
 
-Completely the same thing as the Rick and Morty application I created, however this has been refactored to use clean architecture and rx model store
+Completely the same thing as the Rick and Morty application I created, however this has been refactored to use clean architecture and rx model store (using state and event).
 
 https://github.com/Marannix/RickAndMorty
