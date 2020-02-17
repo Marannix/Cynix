@@ -1,6 +1,7 @@
 package com.example.cynix.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.cynix.R
@@ -27,21 +28,25 @@ class MainActivity : BaseActivity() {
         viewmodel =
             ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
 
-//        viewmodel.events()
-//            .subscribe {
-//                when (it) {
-//                    is CharactersViewModel.CharacterEvent.GenericErrorEvent -> {
-//                        Log.d("error -> ", "event error")
-//                    }
-//                }
-//            }.addDisposable()
-//
-//        viewmodel.states()
-//            .distinctUntilChanged()
-//            .subscribe { state ->
-//                Log.d("loading", state.isLoading.toString())
-//                Log.d("charactersState", state.characters.toString())
-//            }.addDisposable()
+        viewmodel.events()
+            .subscribe {
+                when (it) {
+                    is CharactersViewModel.CharacterEvent.GenericErrorEvent -> {
+                       showToast(getString(R.string.generic_error_description))
+                    }
+                }
+            }.addDisposable()
+
+        viewmodel.states()
+            .distinctUntilChanged()
+            .subscribe { state ->
+                Log.d("loading", state.isLoading.toString())
+
+                state.listOfCharacters.let {
+                    Log.d("Characters ->", state.listOfCharacters.size.toString())
+                }
+
+            }.addDisposable()
 
     }
 
