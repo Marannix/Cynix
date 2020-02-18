@@ -13,9 +13,20 @@ import kotlinx.android.synthetic.main.item_characters.view.*
 class CharacterAdapter : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
 
     private var data: List<Character> = emptyList()
+    private var itemClickListener: ItemClickListener? = null
+
+    interface ItemClickListener {
+        fun onClick(charactersResults: Character)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_characters, parent, false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_characters,
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -33,7 +44,11 @@ class CharacterAdapter : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
         this.notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun setItemClickListener(listener: ItemClickListener) {
+        itemClickListener = listener
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(charactersResults: Character) {
             itemView.characterId.text = "#${charactersResults.id}"
             itemView.characterName.text = charactersResults.name
@@ -43,6 +58,9 @@ class CharacterAdapter : RecyclerView.Adapter<CharacterAdapter.ViewHolder>() {
 
             Picasso.get().load(charactersResults.image).into(itemView.characterImage)
 
+            itemView.characterConstraintLayout.setOnClickListener {
+                itemClickListener?.onClick(charactersResults)
+            }
         }
     }
 }

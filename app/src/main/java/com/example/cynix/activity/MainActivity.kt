@@ -2,23 +2,35 @@ package com.example.cynix.activity
 
 import android.os.Bundle
 import com.example.cynix.R
+import com.example.cynix.character.Character
+import com.example.cynix.fragment.CharacterDetailsFragment
 import com.example.cynix.fragment.CharacterFragment
 
 class MainActivity : BaseActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        initCharacterFragmnet()
+        initCharacterFragment()
     }
 
+    private fun initCharacterFragment() {
+        supportFragmentManager.createFragment(
+            fragmentId = R.id.fragmentContainer,
+            factory = { CharacterFragment() },
+            initializer = {
+                setItemClickListener(object : CharacterFragment.OnFragmentInteractionListener {
+                    override fun onFragmentInteraction(character: Character) {
+                        initDetailFragment()
+                    }
+                })
+            })
+    }
 
-    private fun initCharacterFragmnet() {
-        val fragment = CharacterFragment.newInstance()
-        supportFragmentManager.inTransaction {
-            add(R.id.fragmentContainer, fragment).addToBackStack(fragment.javaClass.name)
-        }
+    fun initDetailFragment() {
+        supportFragmentManager.createFragment(
+            fragmentId = R.id.fragmentContainer,
+            factory = { CharacterDetailsFragment() },
+            initializer = {})
     }
 }

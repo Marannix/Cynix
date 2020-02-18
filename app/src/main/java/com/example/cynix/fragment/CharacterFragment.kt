@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cynix.R
 import com.example.cynix.adapter.CharacterAdapter
+import com.example.cynix.character.Character
 import com.example.cynix.dialog.FullscreenLoadingDialog
 import com.example.cynix.viewmodel.CharactersViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -19,17 +20,25 @@ import kotlinx.android.synthetic.main.fragment_character.*
 
 class CharacterFragment : BaseFragment() {
 
-    private var listener: OnFragmentInteractionListener? = null
+    interface OnFragmentInteractionListener {
+        fun onFragmentInteraction(character: Character)
+    }
+
     private lateinit var viewmodel: CharactersViewModel
     private lateinit var loadingDialog: Dialog
-    private fun Disposable.addDisposable() = disposables.add(this)
-    private val disposables = CompositeDisposable()
 
+    private var listener: OnFragmentInteractionListener? = null
+    private val disposables = CompositeDisposable()
     private val charactersAdapter = CharacterAdapter()
+
+    private fun Disposable.addDisposable() = disposables.add(this)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        stuff()
+        loadingDialog = FullscreenLoadingDialog(requireContext()).apply {
+            setCanceledOnTouchOutside(false)
+        }
+        createViewModel()
         setAdapter()
     }
 
@@ -37,19 +46,9 @@ class CharacterFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_character, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
-    }
-
-
-    fun stuff() {
+    private fun createViewModel() {
         viewmodel =
             ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
-
-        loadingDialog = FullscreenLoadingDialog(requireContext()).apply {
-            setCanceledOnTouchOutside(false)
-        }
 
         viewmodel.events()
             .subscribe {
@@ -63,11 +62,9 @@ class CharacterFragment : BaseFragment() {
         viewmodel.states()
             .distinctUntilChanged()
             .subscribe { state ->
-                Log.d("loading", state.isLoading.toString())
 
                 state.listOfCharacters.let {
                     charactersAdapter.setData(it)
-                    Log.d("Characters ->", state.listOfCharacters.size.toString())
                 }
 
                 state.isLoading.let {
@@ -83,16 +80,16 @@ class CharacterFragment : BaseFragment() {
     private fun setAdapter() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = charactersAdapter
+
+        charactersAdapter.setItemClickListener(object : CharacterAdapter.ItemClickListener {
+            override fun onClick(charactersResults: Character) {
+                listener?.onFragmentInteraction(charactersResults)
+            }
+        })
     }
 
-     interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = CharacterFragment()
+    fun setItemClickListener(listener: OnFragmentInteractionListener) {
+        this.listener = listener
     }
 
     override fun onDestroy() {
