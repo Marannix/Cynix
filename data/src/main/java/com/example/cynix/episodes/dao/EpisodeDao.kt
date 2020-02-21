@@ -15,6 +15,7 @@ abstract class EpisodeDao : EntityDao<EpisodeEntity> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract override fun insert(entity: EpisodeEntity): Long
 
-    @Query("select * from characterEpisodes where characterId = :character_id order by id")
-    abstract fun getEpisodes(character_id: String): Single<List<EpisodeApiContract.CharacterEpisodeResponse>>
+    @Query("select * from episode")
+    abstract fun getAllEpisodes(): Single<List<EpisodeApiContract.CharacterEpisodeResponse>>
+
 }
